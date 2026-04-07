@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EV Population Geospatial Analysis | IE6600 Project 3</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0e1a;--bg2:#111827;--card:#1a2234;--code:#0d1117;--accent:#3b82f6;--orange:#f97316;--text:#f1f5f9;--text2:#94a3b8;--muted:#64748b;--border:rgba(148,163,184,.08);--ba:rgba(59,130,246,.25);--ag:rgba(59,130,246,.15)}
+*{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);line-height:1.7;overflow-x:hidden}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--accent);border-radius:3px}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,14,26,.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.ni{max-width:1300px;margin:0 auto;padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:60px}
+nav .logo{font-family:'DM Serif Display',serif;font-size:1.2rem;color:var(--text);text-decoration:none;display:flex;align-items:center;gap:10px}
+nav .logo span{background:var(--accent);color:#fff;font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:500;padding:3px 8px;border-radius:4px;letter-spacing:.05em;text-transform:uppercase}
+.nl{display:flex;gap:1.8rem;list-style:none}.nl a{color:var(--text2);text-decoration:none;font-size:.82rem;font-weight:500;transition:color .2s}.nl a:hover{color:var(--accent)}
+.hero{min-height:100vh;background:linear-gradient(135deg,#0a0e1a,#1a1040,#0a0e1a);display:flex;align-items:center;justify-content:center;text-align:center;padding:6rem 2rem 4rem;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle at 30% 40%,rgba(59,130,246,.06),transparent 50%),radial-gradient(circle at 70% 60%,rgba(249,115,22,.04),transparent 50%);animation:hf 20s ease-in-out infinite}
+@keyframes hf{0%,100%{transform:translate(0,0)}33%{transform:translate(30px,-30px)}66%{transform:translate(-20px,20px)}}
+.hc{position:relative;z-index:1;max-width:860px}
+.hb{display:inline-flex;align-items:center;gap:8px;background:rgba(59,130,246,.1);border:1px solid var(--ba);padding:6px 16px;border-radius:50px;font-size:.8rem;color:var(--accent);font-weight:500;margin-bottom:2rem}
+.hb::before{content:'';width:6px;height:6px;background:var(--accent);border-radius:50%;animation:p 2s ease-in-out infinite}
+@keyframes p{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.5)}}
+.hero h1{font-family:'DM Serif Display',serif;font-size:clamp(2.4rem,5vw,4rem);line-height:1.15;margin-bottom:1.5rem}
+.grad{background:linear-gradient(135deg,var(--accent),#818cf8,var(--orange));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero p{font-size:1.05rem;color:var(--text2);max-width:640px;margin:0 auto 2.5rem;font-weight:300}
+.hs{display:flex;justify-content:center;gap:3rem;flex-wrap:wrap;margin-top:3rem}
+.hs .n{font-family:'JetBrains Mono',monospace;font-size:2rem;font-weight:700;color:var(--accent);display:block}
+.hs .l{font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-top:4px}
+.ct{max-width:1300px;margin:0 auto;padding:0 2rem}
+.cs{padding:5rem 0}
+.sl{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--accent);text-transform:uppercase;letter-spacing:.12em;margin-bottom:.75rem}
+.st{font-family:'DM Serif Display',serif;font-size:clamp(1.8rem,3vw,2.4rem);margin-bottom:1rem;line-height:1.2}
+.sd{font-size:1rem;color:var(--text2);max-width:700px;margin-bottom:3rem;font-weight:300}
+.dv{width:60px;height:3px;background:linear-gradient(90deg,var(--accent),transparent);margin-bottom:2rem;border-radius:2px}
+.og{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.25rem;margin-bottom:2rem}
+.oc{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.5rem;transition:all .3s}
+.oc:hover{border-color:var(--ba);transform:translateY(-2px)}
+.oc .v{font-family:'JetBrains Mono',monospace;font-size:1.5rem;font-weight:700}.oc .lb{font-size:.8rem;color:var(--muted);margin-top:2px}
+.vb{background:var(--card);border:1px solid var(--border);border-radius:14px;margin-bottom:2.5rem;overflow:hidden}
+.vh{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:.75rem}
+.vhl{display:flex;align-items:center;gap:12px}
+.vn{font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:600;color:var(--bg);background:var(--accent);padding:3px 10px;border-radius:4px}
+.vtt{font-weight:600;font-size:1rem}
+.vtb{font-size:.75rem;color:var(--muted);background:rgba(148,163,184,.08);padding:4px 12px;border-radius:50px}
+.tabs{display:flex;border-bottom:1px solid var(--border)}
+.tab{padding:.75rem 1.5rem;font-size:.82rem;font-weight:500;color:var(--muted);cursor:pointer;border:none;background:none;border-bottom:2px solid transparent;transition:all .2s;font-family:'DM Sans',sans-serif}
+.tab:hover{color:var(--text2)}.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.panel{display:none}.panel.active{display:block}
+.cf{width:100%;height:600px;border:none;background:#fff}.cf.tall{height:700px}
+.cw{position:relative;background:var(--code);overflow-x:auto;padding:1.5rem;max-height:500px;overflow-y:auto}
+.cw pre{font-family:'JetBrains Mono',monospace;font-size:.82rem;line-height:1.65;color:#e6edf3;white-space:pre;margin:0}
+.cb{position:absolute;top:12px;right:12px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);color:var(--muted);padding:5px 14px;border-radius:6px;font-size:.75rem;font-family:'JetBrains Mono',monospace;cursor:pointer;transition:all .2s}
+.cb:hover{background:rgba(255,255,255,.15);color:var(--text)}
+.kw{color:#ff7b72}.fn{color:#d2a8ff}.str{color:#a5d6ff}.num{color:#79c0ff}.cmt{color:#8b949e;font-style:italic}
+.ib{padding:1.25rem 1.5rem;border-top:1px solid var(--border);background:rgba(59,130,246,.03)}
+.il{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--accent);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.4rem}
+.it{font-size:.9rem;color:var(--text2);line-height:1.7;font-weight:300}
+.fg{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:1.5rem}
+.fc{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.75rem;transition:all .3s;position:relative;overflow:hidden}
+.fc::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:linear-gradient(180deg,var(--accent),transparent);opacity:0;transition:opacity .3s}
+.fc:hover::before{opacity:1}.fc:hover{border-color:var(--ba);transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,0,0,.3)}
+.fnum{font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.6rem}
+.ftit{font-family:'DM Serif Display',serif;font-size:1.15rem;margin-bottom:.6rem;line-height:1.3}
+.ftxt{font-size:.88rem;color:var(--text2);line-height:1.7;font-weight:300}
+.conc{background:linear-gradient(135deg,rgba(59,130,246,.05),rgba(249,115,22,.03));border:1px solid var(--ba);border-radius:16px;padding:2.5rem}
+.conc p{font-size:1rem;color:var(--text2);line-height:1.8;font-weight:300}
+.tg{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.25rem;margin-bottom:2rem}
+.tc{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.5rem;text-align:center}
+.tc .nm{font-weight:600;font-size:1rem;margin-bottom:2px}.tc .rl{font-size:.8rem;color:var(--muted)}
+.tr{display:flex;flex-wrap:wrap;gap:.75rem;justify-content:center}
+.tt{background:var(--card);border:1px solid var(--border);padding:8px 18px;border-radius:50px;font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--text2)}
+footer{text-align:center;padding:3rem 2rem;border-top:1px solid var(--border);color:var(--muted);font-size:.82rem}footer a{color:var(--accent);text-decoration:none}
+.fi{opacity:0;transform:translateY(30px);transition:opacity .7s ease,transform .7s ease}.fi.vis{opacity:1;transform:translateY(0)}
+@media(max-width:768px){.nl{display:none}.hs{gap:1.5rem}.fg{grid-template-columns:1fr}.ct{padding:0 1.25rem}.cf{height:450px}}
+</style>
+</head>
+<body>
+<nav><div class="ni"><a href="#" class="logo">EV Analysis <span>IE6600</span></a><ul class="nl"><li><a href="#overview">Overview</a></li><li><a href="#cleaning">Cleaning</a></li><li><a href="#visualizations">Visualizations</a></li><li><a href="#advanced">Advanced</a></li><li><a href="#findings">Findings</a></li><li><a href="#team">Team</a></li></ul></div></nav>
+
+<section class="hero"><div class="hc">
+<div class="hb">IE6600 Spring 2026 &middot; Project 3 &middot; Group 10</div>
+<h1>Geospatial Analysis of<br><span class="grad">Electric Vehicle Population Data</span></h1>
+<p>Exploring the geographic distribution, market dynamics, and temporal evolution of 278,996 EV registrations across Washington State through 14 interactive Plotly visualizations.</p>
+<div class="hs">
+<div><span class="n">278,996</span><span class="l">EV Registrations</span></div>
+<div><span class="n">39</span><span class="l">Counties</span></div>
+<div><span class="n">47</span><span class="l">Manufacturers</span></div>
+<div><span class="n">14</span><span class="l">Visualizations</span></div>
+</div></div></section>
+
+<section class="cs" id="overview"><div class="ct">
+<div class="sl">01 / Dataset</div><h2 class="st">Dataset Overview</h2><div class="dv"></div>
+<p class="sd">The Electric Vehicle Population dataset from data.gov contains vehicle registration records maintained by the Washington State Department of Licensing, spanning model years 1999 to 2027.</p>
+<div class="og fi">
+<div class="oc"><div class="v">279,780</div><div class="lb">Raw Records</div></div>
+<div class="oc"><div class="v">16 &rarr; 20</div><div class="lb">Columns (Raw &rarr; Cleaned)</div></div>
+<div class="oc"><div class="v">223,279</div><div class="lb">Battery Electric (BEV)</div></div>
+<div class="oc"><div class="v">55,717</div><div class="lb">Plug-in Hybrid (PHEV)</div></div>
+<div class="oc"><div class="v">114,468</div><div class="lb">Tesla Registrations</div></div>
+<div class="oc"><div class="v">138,129</div><div class="lb">King County Alone</div></div>
+<div class="oc"><div class="v">99.96%</div><div class="lb">Valid Coordinates</div></div>
+<div class="oc"><div class="v">0</div><div class="lb">Duplicates Found</div></div>
+</div></div></section>
+
+<section class="cs" id="cleaning"><div class="ct">
+<div class="sl">02 / Preparation</div><h2 class="st">Data Cleaning &amp; Preparation</h2><div class="dv"></div>
+<div class="vb fi"><div class="vh"><div class="vhl"><span class="vn">STEP 1</span><span class="vtt">Coordinate Extraction &amp; Filtering</span></div><span class="vtb">Geospatial Prep</span></div>
+<div class="cw"><button class="cb" onclick="copyCode(this)">Copy</button>
+<pre><span class="cmt"># Extract lat/lon from "POINT (-122.31 47.60)"</span>
+<span class="kw">def</span> <span class="fn">parse_point</span>(val):
+    <span class="kw">if</span> pd.isna(val): <span class="kw">return</span> pd.Series([np.nan, np.nan])
+    coords = val.replace(<span class="str">'POINT ('</span>,<span class="str">''</span>).replace(<span class="str">')'</span>,<span class="str">''</span>).split()
+    <span class="kw">return</span> pd.Series([<span class="fn">float</span>(coords[<span class="num">0</span>]), <span class="fn">float</span>(coords[<span class="num">1</span>])])
+
+df[[<span class="str">'Longitude'</span>,<span class="str">'Latitude'</span>]] = df[<span class="str">'Vehicle Location'</span>].apply(parse_point)
+df_wa = df.dropna(subset=[<span class="str">'Latitude'</span>]).query(<span class="str">"State == 'WA'"</span>).copy()
+df_wa = df_wa.drop_duplicates(subset=[<span class="str">'VIN (1-10)'</span>,<span class="str">'DOL Vehicle ID'</span>])
+df_wa[<span class="str">'EV_Type_Short'</span>] = df_wa[<span class="str">'Electric Vehicle Type'</span>].map({
+    <span class="str">'Battery Electric Vehicle (BEV)'</span>:<span class="str">'BEV'</span>,
+    <span class="str">'Plug-in Hybrid Electric Vehicle (PHEV)'</span>:<span class="str">'PHEV'</span>})</pre></div>
+<div class="ib"><div class="il">Result</div><div class="it">279,671 valid coordinates (99.96%). After WA filter + dedup: <strong>278,996 records</strong>, 20 columns, 0 duplicates. BEV: 223,279 | PHEV: 55,717.</div></div>
+</div></div></section>
+
+<section class="cs" id="visualizations"><div class="ct">
+<div class="sl">03 / Geospatial Visualizations</div><h2 class="st">Interactive Visualizations</h2><div class="dv"></div>
+<p class="sd">10 core interactive Plotly visualizations. Toggle between the live chart and the Python code.</p>
+
+  <div class="vb fi" id="viz01">
+    <div class="vh"><div class="vhl"><span class="vn">VIZ 01</span><span class="vtt">EV Registration Scatter Map</span></div><span class="vtb">Scatter Mapbox &middot; 278,996 points</span></div>
+    <div class="tabs"><button class="tab active" onclick="switchTab(this,'chart')">Interactive Chart</button><button class="tab" onclick="switchTab(this,'code')">Python Code</button></div>
+    <div class="panel active" data-panel="chart"><iframe class="cf tall" src="viz1_ev_scatter_map.html" loading="lazy"></iframe></div>
+    <div class="panel" data-panel="code"><div class="cw"><button class="cb" onclick="copyCode(this)">Copy</button><pre>fig1 = px.scatter_mapbox(df_wa, lat='Latitude', lon='Longitude',
+    color='EV_Type_Short',
+    color_discrete_map={'BEV':'#1f77b4','PHEV':'#ff7f0e'},
+    hover_name='Make', zoom=6,
+    center={'lat':47.5,'lon':-120.5}, opacity=0.4,
+    title='Electric Vehicle Registrations Across Washington State')
+fig1.update_layout(mapbox_style='carto-positron', height=700)</pre></div></div>
+    <div class="ib"><div class="il">Insight</div><div class="it">Extreme concentration in Puget Sound corridor (Seattle-Bellevue-Tacoma). Eastern WA sparse. BEVs dominate over PHEVs across all regions.</div></div>
+  </div>
+  <div class="vb fi" id="viz02">
+    <div class="vh"><div class="vhl"><span class="vn">VIZ 02</span><span class="vtt">County-Level Bubble Map</span></div><span class="vtb">Bubble Mapbox &middot; 39 counties</span></div>
+    <div class="tabs"><button class="tab active" onclick="switchTab(this,'chart')">Interactive Chart</button><button class="tab" onclick="switchTab(this,'code')">Python Code</button></div>
+    <div class="panel active" data-panel="chart"><iframe class="cf " src="viz2_county_bubble_map.html" loading="lazy"></iframe></div>
+    <div class="panel" data-panel="code"><div class="cw"><button class="cb" onclick="copyCode(this)">Copy</button><pre>county_counts = df_wa.groupby('County').agg(
+    EV_Count=('VIN (1-10)','count'),
+    Lat=('Latitude','mean'), Lon=('Longitude','mean')
+).reset_index()
+fig2 = px.scatter_mapbox(county_counts, lat='Lat', lon='Lon',
+    size='EV_Count', color='EV_Count',
+    color_continuous_scale='Viridis', hover_name='County',
+    size_max=50, zoom=6)</pre></div></div>
+    <div class="ib"><div class="il">Insight</div><div class="it">King County dominates with 138,129 registrations (49.5%). Top 3 counties account for over 70% of all WA EVs.</div></div>
+  </div>
+  <div class="vb fi" id="viz03">
+    <div class="vh"><div class="vhl"><span class="vn">VIZ 03</span><span class="vtt">Manufacturer Market Share</span></div><span class="vtb">Treemap &middot; Top 10 makes</span></div>
+    <div class="tabs"><button class="tab active" onclick="switchTab(this,'chart')">Interactive Chart</button><button class="tab" onclick="switchTab(this,'code')">Python Code</button></div>
+    <div class="panel active" data-panel="chart"><iframe class="cf " src="viz3_manufacturer_treemap.html" loading="lazy"></iframe></div>
+    <div class="panel" data-panel="code"><div class="cw"><button class="cb" onclick="copyCode(this)">Copy</button><pre>top_makes = df_wa['Make'].value_counts().head(10).reset_index()
+top_makes.columns = ['Make','Count']
+fig3 = px.treemap(top_makes, path=['Make'], values='Count',
+    color='Count', color_continuous_scale='Blues',
+    title='Top 10 EV Manufacturers by Registration Count')</pre></div></div>
+    <div class="ib"><div class="il">Insight</div><div class="it">Tesla commands 41% share (114,468), more than next 5 combined. Chevrolet, Nissan, Ford, Kia round out top 5.</div></div>
+  </div>
+  <div class="vb fi" id="viz04">
+    <div class="vh"><div class="vhl"><span class="vn">VIZ 04</span><span class="vtt">EV Adoption Over Time</span></div><span class="vtb">Grouped Bar &middot; 2010-2025</span></div>
+    <div class="tabs"><button class="tab active" onclick="switchTab(this,'chart')">Interactive Chart</button><button class="tab" onclick="switchTab(this,'code')">Python Code</button></div>
+    <div class="panel active" data-panel="chart"><iframe class="cf " src="viz4_yearly_adoption.html" loading="lazy"></iframe></div>
+    <div class="panel" data-panel="code"><div class="cw"><button class="cb" onclick="copyCode(this)">Copy</button><pre>yearly = df_wa.groupby(['Model Year','EV_Type_Short']).size().reset_index(name='Count')
+yearly = yearly[yearly['Model Year'].between(2010, 2025)]
+fig4 = px.bar(yearly, x='Model Year', y='Count',
+    color='EV_Type_Short', barmode='group',
+    title='EV Registrations by Model Year (2010-2025)')</pre></div></div>
+    <div class="ib"><div class="il">Insight</div><div class="it">Exponential growth from 2018, peaking in 2023. BEV-PHEV gap widening dramatically, confirming shift to fully electric.</div></div>
+  </div>
+  <div class="vb fi" id="viz05">
+    <div class="vh"><div class="vhl"><span class="vn">VIZ 05</span><span class="vtt">Electric Range Distribution</span></div><span class="vtb">Histogram + Box &middot; BEV vs PHEV</span></div>
+    <div class="tabs"><button class="tab active" onclick="switchTab(this,'chart')">Interactive Chart</button><button class="tab" onclick="switchTab(this,'code')">Python Code</button></div>
+    <div class="panel active" data-panel="chart"><iframe class="cf " src="viz5_range_distribution.html" loading="lazy"></iframe></div>
+    <div class="panel" data-panel="code"><div class="cw"><button class="cb" onclick="copyCode(this)">Copy</button><pre>df_range = df_wa[df_wa['Electric Range'] > 0]
+fig5 = px.histogram(df_range, x='Electric Range',
+    color='EV_Type_Short', nbins=60, marginal='box',
+    barmode='overlay', opacity=0.7,
+    title='Electric Range Distribution: BEV vs PHEV')</pre></div></div>
+    <div class="ib"><div class="il">Insight</div><div class="it">BEVs bimodal: ~80mi (old LEAFs), ~250mi (Teslas), 300+mi (new). PHEVs cluster 20-40mi. Generational battery leap visible.</div></div>
+  </div>
+  <div class="vb fi" id="viz06">
+    <div class="vh"><div class="vhl"><span class="vn">VIZ 06</span><span class="vtt">Geographic Density Heatmap</span></div><span class="vtb">Density Mapbox &middot; 278,996 vehicles</span></div>
+    <div class="tabs"><button class="tab active" onclick="switchTab(this,'chart')">Interactive Chart</button><button class="tab" onclick="switchTab(this,'code')">Python Code</button></div>
+    <div class="panel active" data-panel="chart"><iframe class="cf tall" src="viz6_density_heatmap.html" loading="lazy"></iframe></div>
+    <div class="panel" data-panel="code"><div class="cw"><button class="cb" onclick="copyCode(this)">Copy</button><pre># Pre-aggregate ALL 278,996 into ~1.5km grid cells
+df_wa['Lat_bin'] = (df_wa['Latitude'] / 0.02).round() * 0.02
+df_wa['Lon_bin'] = (df_wa['Longitude'] / 0.02).round() * 0.02
+grid = df_wa.groupby(['Lat_bin','Lon_bin']).size().reset_index(name='Count')
+fig6 = px.density_mapbox(grid, lat='Lat_bin', lon='Lon_bin',
+    z='Count', radius=15, zoom=6,
+    color_continuous_scale='Inferno',
+    title='EV Registration Density Heatmap')</pre></div></div>
+    <div class="ib"><div class="il">Insight</div><div class="it">All 278,996 vehicles in 559 grid cells. Clear west-to-east gradient. Seattle core hottest; secondary spots in Olympia, Bellingham.</div></div>
+  </div>
+  <div class="vb fi" id="viz07">
+    <div class="vh"><div class="vhl"><span class="vn">VIZ 07</span><span class="vtt">Top 15 Cities</span></div><span class="vtb">Horizontal Bar &middot; BEV/PHEV split</span></div>
+    <div class="tabs"><button class="tab active" onclick="switchTab(this,'chart')">Interactive Chart</button><button class="tab" onclick="switchTab(this,'code')">Python Code</button></div>
+    <div class="panel active" data-panel="chart"><iframe class="cf " src="viz7_top_cities.html" loading="lazy"></iframe></div>
+    <div class="panel" data-panel="code"><div class="cw"><button class="cb" onclick="copyCode(this)">Copy</button><pre>city_counts = df_wa.groupby(['City','EV_Type_Short']).size().reset_index(name='Count')
+top_cities = df_wa['City'].value_counts().head(15).index
+fig7 = px.bar(city_counts[city_counts['City'].isin(top_cities)],
+    y='City', x='Count', color='EV_Type_Short',
+    orientation='h', title='Top 15 Cities by EV Count')</pre></div></div>
+    <div class="ib"><div class="il">Insight</div><div class="it">Seattle leads by wide margin. BEV share exceeds 75% in nearly all top cities. Tech hubs show highest BEV proportions.</div></div>
+  </div>
+  <div class="vb fi" id="viz08">
+    <div class="vh"><div class="vhl"><span class="vn">VIZ 08</span><span class="vtt">Electric Utility Providers</span></div><span class="vtb">Horizontal Bar &middot; Top 10</span></div>
+    <div class="tabs"><button class="tab active" onclick="switchTab(this,'chart')">Interactive Chart</button><button class="tab" onclick="switchTab(this,'code')">Python Code</button></div>
+    <div class="panel active" data-panel="chart"><iframe class="cf " src="viz8_utility_providers.html" loading="lazy"></iframe></div>
+    <div class="panel" data-panel="code"><div class="cw"><button class="cb" onclick="copyCode(this)">Copy</button><pre>utility_counts = df_wa['Electric Utility'].value_counts().head(10).reset_index()
+utility_counts.columns = ['Utility','EV_Count']
+fig8 = px.bar(utility_counts, x='EV_Count', y='Utility',
+    orientation='h', color='EV_Count',
+    color_continuous_scale='Teal', text_auto=True)</pre></div></div>
+    <div class="ib"><div class="il">Insight</div><div class="it">Puget Sound Energy and Seattle City Light serve majority of EV owners. Direct implications for grid capacity and charging infra.</div></div>
+  </div>
+  <div class="vb fi" id="viz09">
+    <div class="vh"><div class="vhl"><span class="vn">VIZ 09</span><span class="vtt">CAFV Eligibility Sunburst</span></div><span class="vtb">Sunburst &middot; Type to Status</span></div>
+    <div class="tabs"><button class="tab active" onclick="switchTab(this,'chart')">Interactive Chart</button><button class="tab" onclick="switchTab(this,'code')">Python Code</button></div>
+    <div class="panel active" data-panel="chart"><iframe class="cf " src="viz9_cafv_sunburst.html" loading="lazy"></iframe></div>
+    <div class="panel" data-panel="code"><div class="cw"><button class="cb" onclick="copyCode(this)">Copy</button><pre>cafv_data = df_wa.groupby(['EV_Type_Short','CAFV_Status']).size().reset_index(name='Count')
+fig9 = px.sunburst(cafv_data, path=['EV_Type_Short','CAFV_Status'],
+    values='Count', color='CAFV_Status',
+    color_discrete_map={'Eligible':'#2ca02c',
+    'Not Eligible':'#d62728','Unknown':'#7f7f7f'})</pre></div></div>
+    <div class="ib"><div class="il">Insight</div><div class="it">Most BEVs qualify for CAFV incentives. Significant PHEVs fall short due to limited electric range. Policy implications for credits.</div></div>
+  </div>
+  <div class="vb fi" id="viz10">
+    <div class="vh"><div class="vhl"><span class="vn">VIZ 10</span><span class="vtt">Average Range by Manufacturer</span></div><span class="vtb">Horizontal Bar &middot; BEVs Top 15</span></div>
+    <div class="tabs"><button class="tab active" onclick="switchTab(this,'chart')">Interactive Chart</button><button class="tab" onclick="switchTab(this,'code')">Python Code</button></div>
+    <div class="panel active" data-panel="chart"><iframe class="cf " src="viz10_make_avg_range.html" loading="lazy"></iframe></div>
+    <div class="panel" data-panel="code"><div class="cw"><button class="cb" onclick="copyCode(this)">Copy</button><pre>bev_only = df_wa[(df_wa['EV_Type_Short']=='BEV') & (df_wa['Electric Range']>0)]
+top15 = bev_only['Make'].value_counts().head(15).index
+make_range = bev_only[bev_only['Make'].isin(top15)].groupby('Make').agg(
+    Avg_Range=('Electric Range','mean'),
+    Count=('VIN (1-10)','count')
+).reset_index().sort_values('Avg_Range')
+fig10 = px.bar(make_range, y='Make', x='Avg_Range', orientation='h')</pre></div></div>
+    <div class="ib"><div class="il">Insight</div><div class="it">Tesla and Rivian lead at 250+ miles. Legacy makers lower due to older models. Hyundai/Kia competitive with new platforms.</div></div>
+  </div>
+</div></section>
+
+<section class="cs" id="advanced"><div class="ct">
+<div class="sl">04 / Advanced Analysis</div><h2 class="st">Advanced Geospatial Analysis</h2><div class="dv"></div>
+<p class="sd">Temporal animations, comparative density maps, range evolution, and multi-dimensional city-level analysis.</p>
+
+  <div class="vb fi" id="adv01">
+    <div class="vh"><div class="vhl"><span class="vn">ADV 01</span><span class="vtt">Animated County Growth (2015-2025)</span></div><span class="vtb">Animated Mapbox &middot; Cumulative</span></div>
+    <div class="tabs"><button class="tab active" onclick="switchTab(this,'chart')">Interactive Chart</button><button class="tab" onclick="switchTab(this,'code')">Python Code</button></div>
+    <div class="panel active" data-panel="chart"><iframe class="cf tall" src="viz11_animated_county_growth.html" loading="lazy"></iframe></div>
+    <div class="panel" data-panel="code"><div class="cw"><button class="cb" onclick="copyCode(this)">Copy</button><pre>county_year = df_wa[df_wa['Model Year'].between(2015,2025)].groupby(
+    ['County','Model Year']).agg(
+    Count=('VIN (1-10)','count'),
+    Lat=('Latitude','mean'), Lon=('Longitude','mean')).reset_index()
+
+county_year_cum = []
+for county in county_year['County'].unique():
+    c = county_year[county_year['County']==county].sort_values('Model Year')
+    c['Cumulative'] = c['Count'].cumsum()
+    county_year_cum.append(c)
+county_year_cum = pd.concat(county_year_cum)
+
+fig11 = px.scatter_mapbox(county_year_cum,
+    lat='Lat', lon='Lon', size='Cumulative',
+    color='Cumulative', animation_frame='Model Year',
+    hover_name='County', size_max=45, zoom=6,
+    color_continuous_scale='Plasma')</pre></div></div>
+    <div class="ib"><div class="il">Insight</div><div class="it">Growth starts in King County, spreads to Snohomish, Pierce, Clark. Post-2020 acceleration dramatic. Eastern counties lag 3-4 years.</div></div>
+  </div>
+  <div class="vb fi" id="adv02">
+    <div class="vh"><div class="vhl"><span class="vn">ADV 02</span><span class="vtt">Tesla vs Non-Tesla Density</span></div><span class="vtb">Dual Density Map &middot; Side-by-side</span></div>
+    <div class="tabs"><button class="tab active" onclick="switchTab(this,'chart')">Interactive Chart</button><button class="tab" onclick="switchTab(this,'code')">Python Code</button></div>
+    <div class="panel active" data-panel="chart"><iframe class="cf " src="viz12_tesla_vs_others.html" loading="lazy"></iframe></div>
+    <div class="panel" data-panel="code"><div class="cw"><button class="cb" onclick="copyCode(this)">Copy</button><pre>fig12 = make_subplots(rows=1, cols=2,
+    subplot_titles=('Tesla','Non-Tesla'),
+    specs=[[{'type':'mapbox'},{'type':'mapbox'}]])
+fig12.add_trace(go.Densitymapbox(
+    lat=df_wa[df_wa['Make']=='TESLA']['Latitude'],
+    lon=df_wa[df_wa['Make']=='TESLA']['Longitude'],
+    radius=10, colorscale='Reds'), row=1, col=1)
+fig12.add_trace(go.Densitymapbox(
+    lat=df_wa[df_wa['Make']!='TESLA']['Latitude'],
+    lon=df_wa[df_wa['Make']!='TESLA']['Longitude'],
+    radius=10, colorscale='Blues'), row=1, col=2)</pre></div></div>
+    <div class="ib"><div class="il">Insight</div><div class="it">Tesla concentrates in affluent suburbs (Bellevue, Kirkland). Non-Tesla more dispersed via affordable LEAF and Bolt in smaller cities.</div></div>
+  </div>
+  <div class="vb fi" id="adv03">
+    <div class="vh"><div class="vhl"><span class="vn">ADV 03</span><span class="vtt">BEV Range Evolution (2011-2025)</span></div><span class="vtb">Line + IQR Band</span></div>
+    <div class="tabs"><button class="tab active" onclick="switchTab(this,'chart')">Interactive Chart</button><button class="tab" onclick="switchTab(this,'code')">Python Code</button></div>
+    <div class="panel active" data-panel="chart"><iframe class="cf " src="viz13_range_evolution.html" loading="lazy"></iframe></div>
+    <div class="panel" data-panel="code"><div class="cw"><button class="cb" onclick="copyCode(this)">Copy</button><pre>bev_trend = df_wa[(df_wa['EV_Type_Short']=='BEV') &
+    (df_wa['Electric Range']>0) &
+    (df_wa['Model Year'].between(2011,2025))]
+yearly_range = bev_trend.groupby('Model Year').agg(
+    Mean_Range=('Electric Range','mean'),
+    Median_Range=('Electric Range','median'),
+    P25=('Electric Range', lambda x: x.quantile(0.25)),
+    P75=('Electric Range', lambda x: x.quantile(0.75))
+).reset_index()
+# Shaded IQR band + mean/median lines
+fig13 = go.Figure()
+fig13.add_trace(go.Scatter(x=yearly_range['Model Year'],
+    y=yearly_range['P75'], fill=None, line=dict(width=0)))
+fig13.add_trace(go.Scatter(x=yearly_range['Model Year'],
+    y=yearly_range['P25'], fill='tonexty',
+    fillcolor='rgba(31,119,180,0.2)'))</pre></div></div>
+    <div class="ib"><div class="il">Insight</div><div class="it">3x improvement: ~75mi (2011) to 250+mi (2024-25). IQR widens after 2018, then mean/median converge around 250-300mi.</div></div>
+  </div>
+  <div class="vb fi" id="adv04">
+    <div class="vh"><div class="vhl"><span class="vn">ADV 04</span><span class="vtt">City-Level: Range vs BEV Share</span></div><span class="vtb">Multi-dim Scatter &middot; 4 variables</span></div>
+    <div class="tabs"><button class="tab active" onclick="switchTab(this,'chart')">Interactive Chart</button><button class="tab" onclick="switchTab(this,'code')">Python Code</button></div>
+    <div class="panel active" data-panel="chart"><iframe class="cf " src="viz14_city_range_vs_bev_share.html" loading="lazy"></iframe></div>
+    <div class="panel" data-panel="code"><div class="cw"><button class="cb" onclick="copyCode(this)">Copy</button><pre>city_stats = df_wa[df_wa['Electric Range']>0].groupby('City').agg(
+    Total=('VIN (1-10)','count'),
+    Avg_Range=('Electric Range','mean'),
+    BEV_Share=('EV_Type_Short', lambda x: (x=='BEV').mean()*100),
+    Avg_Year=('Model Year','mean')).reset_index()
+city_stats = city_stats[city_stats['Total']>=100]
+fig14 = px.scatter(city_stats, x='Avg_Range', y='BEV_Share',
+    size='Total', color='Avg_Year', hover_name='City',
+    color_continuous_scale='Turbo', size_max=40)</pre></div></div>
+    <div class="ib"><div class="il">Insight</div><div class="it">Positive correlation: newer fleets have higher range AND BEV share. Seattle/Bellevue cluster upper-right, confirming long-range preference.</div></div>
+  </div>
+</div></section>
+
+<section class="cs" id="findings"><div class="ct">
+<div class="sl">05 / Results</div><h2 class="st">Key Findings</h2><div class="dv"></div>
+<div class="fg">
+    <div class="fc fi"><div class="fnum">Finding 01</div><div class="ftit">Geographic Concentration</div><div class="ftxt">King County: 49.5% of registrations (138,129). Top 3 counties over 70%. Eastern WA significantly lower adoption.</div></div>
+    <div class="fc fi"><div class="fnum">Finding 02</div><div class="ftit">Market Dominance</div><div class="ftxt">Tesla: 114,468 (41%), more than next 5 combined. BEVs outnumber PHEVs 4:1 (223,279 vs 55,717), gap widening.</div></div>
+    <div class="fc fi"><div class="fnum">Finding 03</div><div class="ftit">Accelerating Adoption</div><div class="ftxt">2022-2024 exponential growth, 2023 peak. Adoption diffuses from King County outward. East lags 3-4 years.</div></div>
+    <div class="fc fi"><div class="fnum">Finding 04</div><div class="ftit">Range Improvements</div><div class="ftxt">BEV range tripled: ~75mi (2011) to 250+mi (2024-25). Standardizing around 250-300mi.</div></div>
+    <div class="fc fi"><div class="fnum">Finding 05</div><div class="ftit">Utility Impact</div><div class="ftxt">Puget Sound Energy and Seattle City Light serve most EV owners. Grid upgrades and smart charging urgently needed.</div></div>
+    <div class="fc fi"><div class="fnum">Finding 06</div><div class="ftit">CAFV Eligibility</div><div class="ftxt">Most BEVs qualify for incentives. Significant PHEVs fall short due to limited electric range.</div></div>
+    <div class="fc fi"><div class="fnum">Finding 07</div><div class="ftit">Tesla vs Non-Tesla</div><div class="ftxt">Tesla in affluent suburbs; non-Tesla broader via affordable LEAF and Bolt in smaller cities.</div></div>
+    <div class="fc fi"><div class="fnum">Finding 08</div><div class="ftit">City Correlation</div><div class="ftxt">Newer fleets show higher range AND BEV share. Recent adopters choose long-range BEVs.</div></div>
+</div></div></section>
+
+<section class="cs"><div class="ct">
+<div class="sl">06 / Conclusion</div><h2 class="st">Conclusion</h2><div class="dv"></div>
+<div class="conc fi"><p>This project analyzed 278,996 cleaned Washington State EV registration records across 39 counties and 47 manufacturers from data.gov. After extracting geospatial coordinates and standardizing categorical fields, we built 14 interactive Plotly visualizations including scatter maps, density heatmaps, animated temporal maps, treemaps, sunburst charts, and multi-dimensional scatter plots, all saved as HTML files. The analysis reveals King County holds 49.5% of registrations, Tesla dominates at 41% market share, BEVs outnumber PHEVs 4:1, and average BEV range has tripled from 75 to over 250 miles. Adoption is diffusing outward from urban cores, and Puget Sound Energy and Seattle City Light face the highest infrastructure demand. These insights support charging infrastructure planning, grid capacity management, and equitable transportation policy.</p></div>
+</div></section>
+
+<section class="cs" id="team"><div class="ct">
+<div class="sl">07 / Team</div><h2 class="st">Team &amp; Tools</h2><div class="dv"></div>
+<div class="tg fi">
+<div class="tc"><div class="nm">Clyde Joseph Dsouza</div><div class="rl">Team Member</div></div>
+<div class="tc"><div class="nm">Aditya Girish Anand</div><div class="rl">Team Member</div></div>
+<div class="tc"><div class="nm">Sayee Ashish Aher</div><div class="rl">Team Member</div></div>
+</div>
+<div class="tr fi">
+<span class="tt">Python</span><span class="tt">Pandas</span><span class="tt">NumPy</span><span class="tt">Plotly</span><span class="tt">Jupyter Notebook</span><span class="tt">Mapbox</span><span class="tt">HTML/CSS/JS</span>
+</div></div></section>
+
+<footer>
+<p>IE6600 Computation and Visualization for Analytics &middot; Spring 2026 &middot; Northeastern University</p>
+<p style="margin-top:6px">Dataset: <a href="https://catalog.data.gov/dataset/electric-vehicle-population-data" target="_blank">Electric Vehicle Population Data (data.gov)</a></p>
+</footer>
+
+<script>
+function switchTab(btn,panel){const b=btn.closest('.vb');b.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));b.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));btn.classList.add('active');b.querySelector(`[data-panel="${panel}"]`).classList.add('active')}
+function copyCode(btn){const t=btn.parentElement.querySelector('pre').innerText;navigator.clipboard.writeText(t).then(()=>{btn.textContent='Copied!';setTimeout(()=>btn.textContent='Copy',2000)})}
+const obs=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('vis')})},{threshold:.08,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.fi').forEach(el=>obs.observe(el));
+window.addEventListener('scroll',()=>{document.querySelector('nav').style.borderBottomColor=window.scrollY>50?'rgba(59,130,246,.15)':'rgba(148,163,184,.08)'});
+</script>
+</body></html>
